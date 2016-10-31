@@ -1,10 +1,11 @@
 # pick-textfromxml
 
-##The purpose of the script is to extract just the raw text from the custom XML of the National Library of Finland.
+The purpose of the script is to extract just the raw text from the custom XML of the National Library of Finland.
 
 At the end the extracted text is written to the stdout.
 
 Input parameter: filename  (should be in the custom export XML format of #NatLibfi .
+
 One example version of the expected data can be found from ../data directory.
 
 ##Example of use:
