@@ -3,12 +3,23 @@
 """ ##The purpose of the script is to extract just the raw text from the custom XML of the National Library of Finland.
 At the end the extracted text is written to the stdout.
 
-Input parameter: filename  (should be in the custom export XML format of #NatLibfi .
+Input parameters
+
+-input filename  (should be in the custom export XML format of #NatLibfi .
+-output filename|stdout   (filename where the raw text is written)
+
 One example version of the expected data can be found from ../data directory.
 
-##Example of use:
+###Example of use:
 
-python pick_textfromxml.py -i ..\\data\\1457-4721_1871-07-03_77_001.xml 
+python pick_textfromxml.py -i ..\\data\\1457-4721_1871-07-03_77_001.xml
+
+
+### Running for several files in a directory
+
+for %F in (..\data\*.xml) do python pick_textfromxml.py -i %F -o %~nF_rawb.txt    (windows)
+
+
 
 """
 
@@ -16,11 +27,11 @@ import xml.etree.ElementTree as ET
 
 
 def getALTOContent (filename,myxpath=".//{kk-ocr}text"):
-	""" 
-	Function to return the text of ALTO file 
+	"""
+	Function to return the text of ALTO file
 	2nd parameter can be used to define own XPATH location.
 	"""
-		
+
     #without this namespace changes to ns0.
     #TODO: preferably should read these from the file and do registration dynamicallly
 
@@ -53,20 +64,33 @@ if __name__ == "__main__":
     parser = OptionParser()
 
     parser.add_option("-i", "--input", type="string", dest="input",
-                  help="Input file name", metavar="input")
+                help="Input file name", metavar="input")
+
+    parser.add_option("-o", "--outputput", type="string", dest="output",
+				help="Output file name", metavar="output")
 
 
     (options, args) = parser.parse_args()
     inputfile = options.input
+    outputfile = options.output
 
     if (not inputfile or len(inputfile)==0 ):
         print("Please give the input file with -i parameter")
         sys.exit()
 
+    if (not outputfile or len(outputfile)==0 ):
+        outputfile = inputfile.replace('.xml','_raw.txt')
+        #sys.exit()
+
 
     infiletext = getALTOContent(inputfile)
 
     #print "From file %s, got \n%s" % (inputfile, infiletext)
-    print infiletext
+    if (outputfile == 'stdout'):
+        print infiletext
+    else:
+        f = open(outputfile, 'w')
+        f.write(infiletext.encode('utf8'))
+        f.close()
 
-	
+        print("File %s written." % (outputfile))
