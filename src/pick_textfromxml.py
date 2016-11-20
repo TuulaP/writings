@@ -28,6 +28,7 @@ for %F in (..\data\*.xml) do python pick_textfromxml.py -i %F -o %~nF_rawb.txt  
 """
 
 import xml.etree.ElementTree as ET
+import sys
 
 
 def getALTOContent (filename,myxpath=".//{kk-ocr}text"):
@@ -53,10 +54,11 @@ def getALTOContent (filename,myxpath=".//{kk-ocr}text"):
 		ET.register_namespace(prefix, uri)
 
     #reads in the file
-	et = ET.parse(filename)
+	et   = ET.parse(filename)
 	item = et.findall(myxpath)  # gets the desired element
 
-	return item[0].text
+	# default causes one extra to beginning \n so rm that.
+	return item[0].text.lstrip()
 
 
 
@@ -89,7 +91,7 @@ if __name__ == "__main__":
 
     infiletext = getALTOContent(inputfile)
 
-    #print "From file %s, got \n%s" % (inputfile, infiletext)
+    ##print "From file %s, got (%s)" % (inputfile, infiletext)
     if (outputfile == 'stdout'):
         print infiletext
     else:
